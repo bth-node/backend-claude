@@ -3,10 +3,13 @@
 
 import { Router } from 'express'
 import health from './health.js'
+import users from './users.js'
+import doc from './doc.js'
 
 const router = Router()
 
-// TODO: register route files here — add one line per route file as the project grows
 router.use(health)
+router.use(users)
+router.use(doc)
 
 export default router

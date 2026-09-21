@@ -63,7 +63,7 @@ jobs:
 
           npm run seed
 
-      - run: npm test
+      - run: npm run test:coverage
 
       # Excluded for now — students can edit bruno/*.bru (no technical or
       # documented guard against it yet), which would let a weakened

@@ -9,8 +9,9 @@ const BASE_URL = `http://${HOST}:${PORT}`
 
 export class BackendCommands extends BaseCommand {
   static descriptions = {
-    hello: 'hello   Say hello (example command)',
-    // TODO: add health and doc commands here
+    hello: 'hello          Say hello (example command)',
+    health: 'health         Show server health status',
+    doc: 'doc [search]   List API endpoints, optionally filtered by search term',
   }
 
   constructor(shell) {
@@ -22,10 +23,27 @@ export class BackendCommands extends BaseCommand {
     return `Hello from ${BASE_URL}`
   }
 
-  // TODO: implement health()
-  // Call GET /health and display the status code and response body.
+  async health() {
+    const res = await fetch(`${BASE_URL}/health`)
+    const body = await res.json()
+    console.log(`Status: ${res.status}`)
+    console.table(body)
+  }
 
-  // TODO: implement doc(search)
-  // Call GET /api/doc and display the endpoint list.
-  // If search is provided, filter the results.
+  async doc(search) {
+    const res = await fetch(`${BASE_URL}/api/doc`)
+    const body = await res.json()
+
+    const endpoints = search
+      ? body.endpoints.filter((ep) =>
+          [ep.method, ep.path, ep.description]
+            .join(' ')
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        )
+      : body.endpoints
+
+    console.log(`Status: ${res.status}`)
+    console.table(endpoints)
+  }
 }

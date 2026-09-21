@@ -3,6 +3,8 @@
 
 import { Router } from 'express'
 
+console.log(oops)
+
 const router = Router()
 
 router.get('/health', (req, res) => {

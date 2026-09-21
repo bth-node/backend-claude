@@ -38,3 +38,20 @@ Det roligaste med den delen var att se samma mönster som i Express-routern åte
 ## TIL
 
 Den viktigaste insikten den här veckan var att kodtäckning inte säger något om testens *kvalitet*, bara om koden faktiskt kördes. Mina tre testfiler gav 100 % täckning på alla route-filer, men det beror på att routerna är enkla — täckningsrapporten hade sett likadan ut även om jag glömt att testa själva 404-fallet felaktigt (t.ex. om jag råkat kolla fel statuskod). Det gjorde att jag läste igenom mina `expect`-satser en extra gång istället för att bara lita på den gröna 100%-siffran.
+
+## improve
+
+- **[backend]** Issue 4 ("REST API") ger en exakt array att kopiera med bara `id`: `{ id: '1', name: 'Alice Johansson', email: 'alice@example.com' }`. Men `public/app.js:111` renderar användarkort med `onclick="App.loadUser('${u._id}')"` — den läser `_id`, ett Mongoose-fält som inte existerar förrän kmom05. Kopierar man issue 4:s array ordagrant blir `u._id` `undefined`, och att klicka på ett användarkort i den riktiga frontendn skickar `GET /api/users/undefined` istället för ett giltigt id. Issue 4:s egen verifiering (Bruno mot `/api/users` och `/api/users/:id`) testar aldrig `_id`-fältet, så avvikelsen syns inte om man bara följer issuets instruktioner och test till punkt och pricka — den upptäcks först om man klickar runt i den faktiska sajten. Förslag: nämn i issue 4 att detaljvyn i frontendn inte fungerar fullt ut förrän kmom05, eller uppdatera exempelarrayen till att även innehålla `_id` (spegling av `id`) redan i kmom04.
+
+  Så löste jag det i `src/routes/users.js` — lägg till `_id` som en spegling av `id`:
+
+  ```diff
+   const users = [
+  -  { id: '1', name: 'Alice' },
+  -  { id: '2', name: 'Bob' },
+  -  { id: '3', name: 'Clara' },
+  +  { id: '1', _id: '1', name: 'Alice Johansson', email: 'alice@example.com', avatar: 'alice.svg' },
+  +  { id: '2', _id: '2', name: 'Bob Lindqvist', email: 'bob@example.com', avatar: 'bob.svg' },
+  +  { id: '3', _id: '3', name: 'Clara Eriksson', email: 'clara@example.com', avatar: 'clara.svg' },
+   ]
+  ```

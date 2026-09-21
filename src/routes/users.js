@@ -6,10 +6,12 @@ import logger from '../logger.js'
 
 const router = Router()
 
+// _id mirrors id — the frontend already reads Mongoose's _id field, which
+// doesn't exist until the mongodb issue replaces this in-memory array.
 const users = [
-  { id: '1', name: 'Alice' },
-  { id: '2', name: 'Bob' },
-  { id: '3', name: 'Clara' },
+  { id: '1', _id: '1', name: 'Alice Johansson', email: 'alice@example.com', avatar: 'alice.svg' },
+  { id: '2', _id: '2', name: 'Bob Lindqvist', email: 'bob@example.com', avatar: 'bob.svg' },
+  { id: '3', _id: '3', name: 'Clara Eriksson', email: 'clara@example.com', avatar: 'clara.svg' },
 ]
 
 router.get('/api/users', (req, res) => {

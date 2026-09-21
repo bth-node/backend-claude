@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <circle cx="60" cy="60" r="60" fill="#1d1f22"/>
+  <circle cx="60" cy="60" r="56" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+  <circle cx="60" cy="44" r="18" fill="#60a5fa" opacity="0.15"/>
+  <circle cx="60" cy="44" r="18" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="60" y="50" text-anchor="middle" font-family="monospace" font-size="14" font-weight="500" fill="#60a5fa">BL</text>
+  <path d="M24 96 Q24 72 60 72 Q96 72 96 96" fill="#60a5fa" opacity="0.15"/>
+  <path d="M24 96 Q24 72 60 72 Q96 72 96 96" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+</svg>

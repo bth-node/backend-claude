@@ -1,0 +1,26 @@
+meta {
+  name: Post Message
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/messages
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": "Hello from Bruno"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.text: eq Hello from Bruno
+}
+
+script:post-response {
+  bru.setVar("messageId", res.body._id);
+}

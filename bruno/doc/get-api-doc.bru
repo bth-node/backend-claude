@@ -1,0 +1,16 @@
+meta {
+  name: Get API Doc
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/doc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.endpoints: isArray
+}

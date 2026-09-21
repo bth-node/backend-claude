@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BTH node — Backend Course</title>
+    <meta name="theme-color" content="#6ee7b7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav id="navbar">
+      <div class="nav-left">
+        <span class="logo">BTH<span class="logo-accent">NODE</span></span>
+        <span class="nav-hint">Programming with JavaScript and Node</span>
+      </div>
+      <div class="nav-right">
+        <div id="nav-auth-links">
+          <button class="btn-ghost" onclick="App.showModal('login')">Sign in</button>
+          <button class="btn-primary" onclick="App.showModal('register')">Register</button>
+        </div>
+        <div id="nav-user" class="hidden">
+          <span class="nav-username" id="nav-username-label"></span>
+          <button class="btn-ghost" onclick="App.logout()">Sign out</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- VIEWS -->
+    <main id="app">
+      <!-- HOME VIEW -->
+      <div id="view-home" class="view active">
+        <div class="hero">
+          <div class="hero-label">bthnode</div>
+          <h1 class="hero-title">Backend Fundamentals</h1>
+          <p class="hero-sub">
+            You are given a complete, polished frontend. Your job is to build the backend that makes
+            it work — one issue at a time.
+          </p>
+        </div>
+
+        <div class="health-card" id="health-card">
+          <div class="health-label">GET /health</div>
+          <div class="health-status" id="health-status">
+            <span class="health-dot"></span>
+            <span id="health-text">Waiting for server…</span>
+          </div>
+          <pre class="health-response hidden" id="health-response"></pre>
+        </div>
+
+        <div class="doc-card">
+          <div class="health-label">GET /api/doc</div>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Auth</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="doc-tbody">
+              <tr>
+                <td colspan="4">
+                  <span class="muted-text">Implement GET /api/doc to see the endpoint list</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="home-features">
+          <div class="feature-card">
+            <div class="feature-icon">◈</div>
+            <div class="feature-name">Users</div>
+            <div class="feature-desc">
+              Fetch and display all registered users from MongoDB via <code>GET /api/users</code>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">◐</div>
+            <div class="feature-name">Auth</div>
+            <div class="feature-desc">
+              Register and log in with bcrypt passwords and JWT stored in an httpOnly cookie
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">◉</div>
+            <div class="feature-name">Dashboard</div>
+            <div class="feature-desc">
+              Protected routes that return personal profile and messages for the logged-in user
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">◎</div>
+            <div class="feature-name">Chat</div>
+            <div class="feature-desc">
+              Real-time messaging across all connected clients using Socket.io
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS VIEW -->
+      <div id="view-users" class="view">
+        <div class="hero">
+          <div class="hero-label">mongodb</div>
+          <h1 class="hero-title">Users</h1>
+          <p class="hero-sub">This list is populated by <code>GET /api/users</code></p>
+        </div>
+        <div id="users-search" class="users-search hidden">
+          <input
+            type="text"
+            id="users-search-input"
+            placeholder="Search by name…"
+            oninput="App.searchUsers()"
+          />
+        </div>
+        <div id="users-grid" class="users-grid">
+          <div class="skeleton-wrap">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="api-badge error" id="users-error-badge">
+              <span class="dot"></span>
+              <code>GET /api/users</code> — not implemented
+            </div>
+          </div>
+        </div>
+        <div id="user-detail" class="user-detail hidden">
+          <div class="health-label" id="user-detail-label"></div>
+          <pre class="health-response" id="user-detail-response"></pre>
+        </div>
+      </div>
+
+      <!-- DASHBOARD VIEW -->
+      <div id="view-dashboard" class="view">
+        <div class="hero">
+          <div class="hero-label">dashboard</div>
+          <h1 class="hero-title">Dashboard</h1>
+          <p class="hero-sub">Requires a valid JWT — protected by auth middleware</p>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card profile-card">
+            <div class="card-label">GET /api/me</div>
+            <div id="profile-content" class="profile-content">
+              <div class="lock-state">
+                <div class="lock-icon">⚿</div>
+                <p>Sign in to see your profile</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card messages-card">
+            <div class="card-label">GET /api/messages</div>
+            <div id="messages-list" class="messages-list">
+              <div class="lock-state">
+                <div class="lock-icon">⚿</div>
+                <p>Sign in to see your messages</p>
+              </div>
+            </div>
+            <form id="message-form" class="message-form hidden" onsubmit="App.postMessage(event)">
+              <input
+                type="text"
+                id="message-input"
+                placeholder="Write a message…"
+                autocomplete="off"
+              />
+              <button type="submit" class="btn-primary">Send</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card stream-card" id="stream-card">
+          <div class="card-label stream-card-label">
+            GET /api/messages/stream
+            <span class="stream-status" id="stream-status">
+              <span class="stream-dot" id="stream-dot"></span>
+              <span id="stream-status-text">not connected</span>
+            </span>
+          </div>
+          <div id="stream-list" class="messages-list">
+            <p class="muted-text">Sign in to see the live stream</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAT VIEW -->
+      <div id="view-chat" class="view">
+        <div class="hero">
+          <div class="hero-label">chat</div>
+          <h1 class="hero-title">Live Chat</h1>
+          <p class="hero-sub">Powered by Socket.io — real-time across all tabs</p>
+        </div>
+
+        <div class="chat-wrap">
+          <div class="card chat-card">
+            <div class="card-label">socket.io</div>
+            <div id="chat-status" class="chat-status disconnected">
+              <span class="status-dot"></span>
+              <span id="chat-status-text"
+                >Not connected — implement socket.io in the chat issue</span
+              >
+            </div>
+            <div id="chat-messages" class="chat-messages"></div>
+            <form id="chat-form" class="chat-form" onsubmit="App.sendChat(event)">
+              <input
+                type="text"
+                id="chat-input"
+                placeholder="Type a message…"
+                autocomplete="off"
+                disabled
+              />
+              <button type="submit" class="btn-primary" id="chat-send" disabled>Send</button>
+            </form>
+          </div>
+
+          <div class="card online-card">
+            <div class="card-label">online</div>
+            <div id="online-list" class="online-list">
+              <p class="muted-text">No one connected yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <button class="nav-tab active" data-view="home" onclick="App.navigate('home')">
+        <span class="tab-icon">◇</span> Home
+      </button>
+      <button class="nav-tab" data-view="users" onclick="App.navigate('users')">
+        <span class="tab-icon">◈</span> Users
+      </button>
+      <button class="nav-tab" data-view="dashboard" onclick="App.navigate('dashboard')">
+        <span class="tab-icon">◉</span> Dashboard
+      </button>
+      <button class="nav-tab" data-view="chat" onclick="App.navigate('chat')">
+        <span class="tab-icon">◎</span> Chat
+      </button>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="modal-overlay" class="modal-overlay hidden" onclick="App.closeModal(event)">
+      <div class="modal">
+        <button class="modal-close" onclick="App.closeModal()">✕</button>
+
+        <div id="modal-login" class="modal-view">
+          <div class="modal-header">
+            <div class="modal-label">auth</div>
+            <h2>Sign in</h2>
+            <p>Calls <code>POST /auth/login</code></p>
+          </div>
+          <form onsubmit="App.login(event)">
+            <label>Email</label>
+            <input
+              type="email"
+              id="login-email"
+              placeholder="alice@example.com"
+              value="alice@example.com"
+            />
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="password" value="password123" />
+            <div id="login-error" class="form-error hidden"></div>
+            <button type="submit" class="btn-primary full-width" id="login-btn">Sign in</button>
+            <p class="modal-switch">
+              No account? <a href="#" onclick="App.showModal('register')">Register</a>
+            </p>
+          </form>
+        </div>
+
+        <div id="modal-register" class="modal-view hidden">
+          <div class="modal-header">
+            <div class="modal-label">auth</div>
+            <h2>Register</h2>
+            <p>Calls <code>POST /auth/register</code></p>
+          </div>
+          <form onsubmit="App.register(event)">
+            <label>Name</label>
+            <input type="text" id="reg-name" placeholder="Your name" />
+            <label>Email</label>
+            <input type="email" id="reg-email" placeholder="you@example.com" />
+            <label>Password</label>
+            <input type="password" id="reg-password" placeholder="Min 6 characters" />
+            <div id="reg-error" class="form-error hidden"></div>
+            <button type="submit" class="btn-primary full-width" id="reg-btn">
+              Create account
+            </button>
+            <p class="modal-switch">
+              Have an account? <a href="#" onclick="App.showModal('login')">Sign in</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+      }
+    </script>
+  </body>
+</html>

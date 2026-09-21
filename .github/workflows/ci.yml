@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  push:
+    tags: ['*']
+  pull_request:
+    branches: ['bth/submit/**']
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  MONGODB_URI: mongodb://localhost:27017/node
+  JWT_SECRET: ci_test_secret
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:8
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm install
+
+      - run: npm run lint
+
+      - run: npm run format:check
+
+      - name: Seed test users
+        run: |
+          if [ ! -f src/models/User.js ]; then
+            echo "No User model yet — skipping seed"
+            exit 0
+          fi
+
+          docker run --rm --network host mongo:8 mongosh "$MONGODB_URI" --quiet --eval '
+            db.users.insertMany([
+              { name: "Alice Johansson", email: "alice@example.com", password: "alice", avatar: "alice.svg", createdAt: new Date() },
+              { name: "Bob Lindqvist",   email: "bob@example.com",   password: "bob",   avatar: "bob.svg",   createdAt: new Date() },
+              { name: "Clara Eriksson",  email: "clara@example.com", password: "clara", avatar: "clara.svg", createdAt: new Date() }
+            ])
+          '
+
+          cat > .env <<ENVEOF
+          PORT=3000
+          MONGODB_URI=${MONGODB_URI}
+          JWT_SECRET=${JWT_SECRET}
+          ENVEOF
+
+          npm run seed
+
+      - run: npm test
+
+      # Excluded for now — students can edit bruno/*.bru (no technical or
+      # documented guard against it yet), which would let a weakened
+      # assertion mask a broken implementation. Re-enable once that's fixed.
+      # - name: Bruno API tests
+      #   if: github.event_name == 'pull_request'
+      #   run: |
+      #     cat > .env <<ENVEOF
+      #     PORT=3000
+      #     MONGODB_URI=${MONGODB_URI}
+      #     JWT_SECRET=${JWT_SECRET}
+      #     ENVEOF
+      #
+      #     node --env-file=.env src/index.js &
+      #     SERVER_PID=$!
+      #     trap "kill $SERVER_PID" EXIT
+      #
+      #     for i in $(seq 1 30); do
+      #       curl -sf http://localhost:3000/health > /dev/null && break
+      #       sleep 1
+      #     done
+      #
+      #     npm run bruno:test
+
+      - name: Check submission
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.base_ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            KMOM=$(echo "$BASE_REF" | sed 's|bth/submit/||')
+          else
+            # Practice tags from earlier issues (v0.1, v0.2, v0.3, testing, ...)
+            # aren't real submissions — only a proper vMAJOR.MINOR.PATCH tag
+            # (e.g. v5.0.0 → kmom05) maps to a kmom. Skip the check for
+            # anything else so the workflow's pass/fail reflects lint/test
+            # only, as issues 02a/04d promise.
+            if ! echo "$REF_NAME" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "Tag '$REF_NAME' is not a submission tag (vMAJOR.MINOR.PATCH) — skipping submission check"
+              exit 0
+            fi
+
+            MAJOR=$(echo "$REF_NAME" | sed -E 's/^v([0-9]+)\..*/\1/')
+            KMOM=$(printf 'kmom%02d' "$MAJOR")
+          fi
+
+          # kmom06 is the one PR/tag that closes out the whole backend project
+          # (kmom04-06 share this repo) — check all three together there.
+          if [ "$KMOM" = "kmom06" ]; then
+            KMOMS="kmom04 kmom05 kmom06"
+          else
+            KMOMS="$KMOM"
+          fi
+
+          OUTPUT=$(bash scripts/check-submissions.sh $KMOMS 2>&1) || FAILED=true
+          echo "$OUTPUT"
+          printf '%s\n' "$OUTPUT" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            gh pr comment "$PR_NUMBER" --body "$(printf '%s\n' "$OUTPUT")" --edit-last 2>/dev/null \
+              || gh pr comment "$PR_NUMBER" --body "$(printf '%s\n' "$OUTPUT")"
+
+            if [ "${FAILED:-}" != "true" ]; then
+              gh pr edit "$PR_NUMBER" --add-label "submission-ok" 2>/dev/null || true
+            else
+              gh pr edit "$PR_NUMBER" --remove-label "submission-ok" 2>/dev/null || true
+            fi
+          fi
+
+          [ "${FAILED:-}" != "true" ]

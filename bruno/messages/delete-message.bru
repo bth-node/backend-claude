@@ -1,0 +1,15 @@
+meta {
+  name: Delete Message
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/messages/{{messageId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

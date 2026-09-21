@@ -1,0 +1,22 @@
+meta {
+  name: Patch Message
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/messages/{{messageId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": "Updated message"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.text: eq Updated message
+}

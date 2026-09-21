@@ -1,0 +1,44 @@
+{
+  "name": "node-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "dev": "nodemon --env-file=.env src/index.js",
+    "serve": "npx serve -l 4000 public/",
+    "test":          "vitest run --passWithNoTests",
+    "test:watch":    "vitest",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "seed": "node --env-file=.env src/scripts/seed.js",
+    "reset-db": "node --env-file=.env src/scripts/reset-db.js",
+    "chat": "node --env-file=.env src/scripts/chat.js",
+    "stream": "node --env-file=.env src/scripts/stream.js",
+    "client": "node --env-file=.env src/client/index.js",
+    "lint": "eslint src/ public/ middleware/ --no-error-on-unmatched-pattern",
+    "lint:fix": "eslint src/ public/ middleware/ --fix --no-error-on-unmatched-pattern",
+    "format": "prettier --write src/ public/ middleware/ --no-error-on-unmatched-pattern",
+    "format:check": "prettier --check src/ public/ middleware/ --no-error-on-unmatched-pattern",
+    "spell": "cspell lint --no-progress \"issues/**/*.md\" \"docs/**/*.md\" \"*.md\" \"src/**/*.js\" \"solution/**/*.js\" \"public/**/*.js\" \"teacher/lecture/**/*.html\" \"teacher/lecture/README.md\" \"bruno/**/*.bru\" \"scripts/**/*.sh\" \"middleware/**/*.js\" \"solution/middleware/**/*.js\"",
+    "bruno:test": "cd bruno && bru run --env student",
+    "check": "bash scripts/check-submissions.sh",
+    "clean": "rm -rf node_modules/",
+    "clean:all": "npm run clean && rm -rf package-lock.json"
+  },
+  "devDependencies": {
+    "@usebruno/cli": "^4.0.0",
+    "@eslint/css": "^1.2.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "supertest": "^7.2.2",
+    "vitest": "^3.0.0",
+    "@eslint/js": "^10.0.0",
+    "cspell": "^10.3.0",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "globals": "^16.0.0",
+    "nodemon": "^3.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

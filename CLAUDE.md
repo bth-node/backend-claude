@@ -43,3 +43,14 @@ Fix applied in `src/routes/users.js`: mirror `_id` alongside `id` on each user o
 `email`/`avatar` fields matching the seed data used elsewhere (`docker-compose`/seed script),
 so the array satisfies both the REST issue's shape and the frontend's expectations ahead of
 kmom05 replacing it with real Mongoose documents.
+
+## MongoDB's default port (27017) is also occupied on this machine
+
+Several other course/project containers on this machine already bind host port `27017`
+(e.g. `example-just-task-it-mongo-1`), so `docker-compose up -d` here fails with `Bind for
+0.0.0.0:27017 failed: port is already allocated` using the repo's default `.env`.
+
+Workaround (the same one `issues/05-mongodb.md`'s own Tips section describes): `.env` sets
+`MONGO_PORT=27019` and `MONGODB_URI=mongodb://localhost:27019/node` — both must stay in sync,
+same as the `PORT=3050` workaround above. `27018` was already taken by another repo's own
+instance of this same workaround; `27019` was free at the time.

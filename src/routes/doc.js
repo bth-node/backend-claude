@@ -16,8 +16,22 @@ router.get('/api/doc', (req, res) => {
         auth: false,
         description: 'API reference (this endpoint)',
       },
-      { method: 'GET', path: '/api/users', auth: false, description: 'List all users' },
-      { method: 'GET', path: '/api/users/:id', auth: false, description: 'Get one user by ID' },
+      {
+        method: 'GET',
+        path: '/api/users',
+        auth: false,
+        description: 'List all users (from MongoDB)',
+      },
+      {
+        method: 'GET',
+        path: '/api/users/:id',
+        auth: false,
+        description: 'Get one user by ID (from MongoDB)',
+      },
+      { method: 'POST', path: '/auth/register', auth: false, description: 'Register a new user' },
+      { method: 'POST', path: '/auth/login', auth: false, description: 'Login and set cookie' },
+      { method: 'POST', path: '/auth/logout', auth: false, description: 'Clear the auth cookie' },
+      { method: 'GET', path: '/api/me', auth: true, description: 'Current user profile' },
     ],
   })
 })

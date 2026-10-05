@@ -32,6 +32,21 @@ router.get('/api/doc', (req, res) => {
       { method: 'POST', path: '/auth/login', auth: false, description: 'Login and set cookie' },
       { method: 'POST', path: '/auth/logout', auth: false, description: 'Clear the auth cookie' },
       { method: 'GET', path: '/api/me', auth: true, description: 'Current user profile' },
+      {
+        method: 'GET',
+        path: '/api/messages',
+        auth: true,
+        description: 'Messages for current user',
+      },
+      { method: 'POST', path: '/api/messages', auth: true, description: 'Create a message' },
+      { method: 'PATCH', path: '/api/messages/:id', auth: true, description: 'Update a message' },
+      { method: 'DELETE', path: '/api/messages/:id', auth: true, description: 'Delete a message' },
+      {
+        method: 'GET',
+        path: '/api/messages/stream',
+        auth: true,
+        description: 'SSE stream of new messages',
+      },
     ],
   })
 })

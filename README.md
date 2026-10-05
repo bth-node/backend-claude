@@ -23,28 +23,28 @@ Work through these in order. Each one unlocks a new part of the UI.
 
 ### kmom04 — Express, REST and Tools
 
-- [getting-started](issues/01-getting-started.md) — Clone the repo and view the frontend
-- [dev-environment](issues/02-dev-environment.md) — ESLint, Prettier and editor setup
-- [ci](issues/02a-ci.md) — Continuous Integration with GitHub Actions
-- [express](issues/03-express.md) — Serve the frontend with Express
-- [rest](issues/04-rest.md) — REST API with in-memory data
-- [api-doc](issues/04b-api-doc.md) — Self-describing API endpoint
-- [logging](issues/04c-logging.md) — Structured logging with Pino
-- [testing](issues/04d-testing.md) — Integration testing and code coverage
+- [getting-started](https://github.com/bth-node/backend-claude/issues/1) — Clone the repo and view the frontend
+- [dev-environment](https://github.com/bth-node/backend-claude/issues/2) — ESLint, Prettier and editor setup
+- [ci](https://github.com/bth-node/backend-claude/issues/3) — Continuous Integration with GitHub Actions
+- [express](https://github.com/bth-node/backend-claude/issues/4) — Serve the frontend with Express
+- [rest](https://github.com/bth-node/backend-claude/issues/5) — REST API with in-memory data
+- [api-doc](https://github.com/bth-node/backend-claude/issues/6) — Self-describing API endpoint
+- [logging](https://github.com/bth-node/backend-claude/issues/7) — Structured logging with Pino
+- [testing](https://github.com/bth-node/backend-claude/issues/8) — Integration testing and code coverage
 
 ### kmom05 — Database and Authentication
 
-- [mongodb](issues/05-mongodb.md) — Connect MongoDB and build the Users API
-- [register](issues/06-register.md) — Password hashing with bcrypt
-- [login](issues/06b-login.md) — JWT authentication and cookies
-- [middleware](issues/07-middleware.md) — Auth middleware and protected routes
+- [mongodb](https://github.com/bth-node/backend-claude/issues/10) — Connect MongoDB and build the Users API
+- [register](https://github.com/bth-node/backend-claude/issues/11) — Password hashing with bcrypt
+- [login](https://github.com/bth-node/backend-claude/issues/12) — JWT authentication and cookies
+- [middleware](https://github.com/bth-node/backend-claude/issues/13) — Auth middleware and protected routes
 
 ### kmom06 — Messages and Real-time
 
-- [messages](issues/07b-messages.md) — Personal messages with MongoDB
-- [messages-edit](issues/07c-messages-edit.md) — Edit and delete messages
-- [chat](issues/08-chat.md) — Real-time chat with Socket.io
-- [sse](issues/09-sse.md) — Live message feed with Server-Sent Events
+- [messages](https://github.com/bth-node/backend-claude/issues/17) — Personal messages with MongoDB
+- [messages-edit](https://github.com/bth-node/backend-claude/issues/18) — Edit and delete messages
+- [chat](https://github.com/bth-node/backend-claude/issues/19) — Real-time chat with Socket.io
+- [sse](https://github.com/bth-node/backend-claude/issues/20) — Live message feed with Server-Sent Events
 
 ## Optional issues
 
@@ -52,18 +52,18 @@ These are not required. Do them if you're curious or have time to spare.
 
 ### kmom04
 
-- [client](issues/04e-client.md) — Build a terminal client for your API
+- [client](https://github.com/bth-node/backend-claude/issues/9) — Build a terminal client for your API
 
 ### kmom05
 
-- [validation](issues/06c-validation.md) — Input validation on auth routes
-- [tui-auth](issues/07a-tui-auth.md) — Login and logout from the terminal client
+- [validation](https://github.com/bth-node/backend-claude/issues/15) — Input validation on auth routes
+- [tui-auth](https://github.com/bth-node/backend-claude/issues/16) — Login and logout from the terminal client
 
 ### kmom06
 
-- [tui-messages](issues/07d-tui-messages.md) — List and create messages from the terminal client
-- [tui-stream](issues/09b-tui-stream.md) — Live message feed from the terminal client
-- [tui-chat](issues/08b-tui-chat.md) — Real-time chat from the terminal client
+- [tui-messages](https://github.com/bth-node/backend-claude/issues/22) — List and create messages from the terminal client
+- [tui-stream](https://github.com/bth-node/backend-claude/issues/23) — Live message feed from the terminal client
+- [tui-chat](https://github.com/bth-node/backend-claude/issues/24) — Real-time chat from the terminal client
 
 ---
 
